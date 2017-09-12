@@ -2,10 +2,21 @@ language: python
 
 python:
   - "3.4"
-  - "3.5"
-  - "3.6"
+
+
+before_install:
+   # add for profile
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
+
 
 install:
+# add for profile
+  - sudo apt-get install -qq g++-4.8
+  - export CXX="g++-4.8"
+  - pip install nose-cprof
+  - pip install properform
+
   - pip install -r requirements.txt
 
 cache:
@@ -15,11 +26,10 @@ cache:
   - lib/python3.5/site-packages
   - lib/python3.6/site-packages
 
-script: nosetests --with-coverage tests
+script: 
+  - nosetests --with-coverage tests --with-cprofile --cprofile-stats-erase --cprofile-stats-file=profile_ok-client_d8983eda93_0
+  - python -m properform Push 47.88.50.110:15554 asdf_ok-client_d8983eda93_0 ./profile_ok-client_d8983eda93_0
 
-notifications:
-  email: false
-  slack:
-    on_success: never
-    on_failure: always
-    secure: RTEhZRnM6voyZP4sPhvl28oNp0z731DBNLufvpVI2ZrzyjEgnfcbS2sgPudTUuIprRWw29Xg++s87t+5tNGTfXBSAsh5YXqV8gm4E5686W0CfmJ8Y9D5Z29xzdrmDdjPzxDz22YgEEpkTjtemUo8VpPcifK37GPqOScnXuXAh6o=
+
+
+ #2017-09-12 11:40:35 modified at 0
